@@ -44,7 +44,7 @@ const CreateOrEditHotel = ({
     rank: hotelToEdit?.rank ?? 0,
     brand: hotelToEdit?.brand ?? '',
     id: hotelToEdit?.id ?? '',
-  }),[hotelToEdit])
+  }), [hotelToEdit])
 
   const [hotelDTO, setHotelDTO] = useState(defaultHotelDTO)
 
@@ -78,14 +78,33 @@ const CreateOrEditHotel = ({
   }
 
   const editHotel = () => {
+    const hotelsToStore = hotels?.map( hotel => (
+      hotel?.id !== hotelToEdit?.id ?
+        hotel :
+        hotelDTO
+    ))
 
+    dispatch( setHotels(hotelsToStore) )
+
+    localStorage.setItem('hotelsInStorage', JSON.stringify(hotelsToStore))
+
+    onClose()
+    
+    toast({
+      title: 'Hotel Edited',
+      description: `An hotel with the name ${hotelDTO.name} has been edited`,
+      position: 'bottom-right',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    })
   }
 
   const parseModeProps = (mode: string) => {
     switch (mode) {
       case MODE.EDITING:
         return {
-          title: 'EdIting this hotel',
+          title: `Editing ${hotelToEdit?.name} hotel`,
           submitAction: editHotel,
         }
     
@@ -99,19 +118,41 @@ const CreateOrEditHotel = ({
   }
 
   useEffect(() => {
-    if(isOpen && mode === MODE.CREATING) {
-      setHotelDTO( details => ({
-        ...details,
-        id: uuid(),
-      }))
+    if(mode === MODE.CREATING) {
+      if(!isOpen) {
+        setHotelDTO(() => ({
+          name: '',
+          city: '',
+          country: '',
+          address: '',
+          rank: 0,
+          brand: '',
+          id: '',
+        }))
+      } else { 
+        setHotelDTO( details => ({
+          ...details,
+          id: uuid(),
+        }))
+      }
     }
-  },[isOpen, mode])
 
-  useEffect(() => {
-    if(!isOpen) {
-      setHotelDTO(() => defaultHotelDTO)
+    if(mode === MODE.EDITING) {
+      if(!isOpen) {
+        setHotelDTO(() => ({
+          name: '',
+          city: '',
+          country: '',
+          address: '',
+          rank: 0,
+          brand: '',
+          id: '',
+        }))
+      } else { 
+        setHotelDTO(() => defaultHotelDTO)
+      }
     }
-  },[isOpen])
+  },[defaultHotelDTO, isOpen, mode])
 
   const onChange = (e: any) => {
 		setHotelDTO((details) => ({ ...details, [e.target.name]: e.target.value }))

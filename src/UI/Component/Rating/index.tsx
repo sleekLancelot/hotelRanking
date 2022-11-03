@@ -30,7 +30,7 @@ const RatingComponent = ({
           <RatingIcon
             key={index}
             index={index} 
-            rating={rating} 
+            rank={rating} 
             hoverRating={hoverRating} 
             onMouseEnter={onMouseEnter} 
             onMouseLeave={onMouseLeave} 

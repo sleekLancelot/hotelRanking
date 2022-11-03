@@ -1,6 +1,5 @@
 import {
     Box,
-    Center,
     useColorModeValue,
     Heading,
     Text,
@@ -75,9 +74,13 @@ const Hotel = ({
                 {hotel?.name}
             </Heading>
 
-            <Text color={'gray.500'} fontSize={'sm'} textTransform={'capitalize'}>
-              Brand: {hotel?.brand}
-            </Text>
+            {
+                !!hotel?.brand &&
+                <Text color={'gray.500'} fontSize={'sm'} textTransform={'capitalize'}>
+                Brand: {hotel?.brand}
+                </Text>
+            }
+
 
             <Stack align={'center'} justify={'center'} direction={'row'} mt={6}>
                 <Badge

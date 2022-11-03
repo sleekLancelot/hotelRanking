@@ -1,10 +1,10 @@
-import React, {useMemo} from 'react'
+import React, {useMemo, useState, useEffect} from 'react'
 import { Box, Icon } from "@chakra-ui/react";
 import {AiFillStar} from 'react-icons/ai'
 
 interface RatingIconProp {
     index: number
-    rating: number
+    rank: number
     hoverRating: number
     onMouseEnter: Function
     onMouseLeave: Function
@@ -13,12 +13,13 @@ interface RatingIconProp {
 
 const RatingIcon = ({
     index,
-    rating,
+    rank,
     hoverRating,
     onMouseEnter,
     onMouseLeave,
     onSaveRating,
 }: RatingIconProp) => {
+    const [rating, setRating] = useState(rank ?? 0);
 
     const color = useMemo(() => {
       if (hoverRating >= index) {
@@ -28,6 +29,10 @@ const RatingIcon = ({
       }
       return 'none';
     }, [rating, hoverRating, index]);
+
+    useEffect(() => {
+      setRating(rank)
+    }, [rank])
 
     return (
         <Box 

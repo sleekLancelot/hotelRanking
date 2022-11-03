@@ -15,10 +15,8 @@ const AllHotelsScreen = () => {
   const [hotelToDisplay, setHotelToDisplay] = useState<Array<any>>([])
   const [filterTerms, setFilterTerms] = useState<Array<any>>([])
   const [hotelToDelete, setHotelToDelete] = useState<any>({})
+  const [hotelToEdit, setHotelToEdit] = useState<any>({})
   const [operatingMode, setOperatingMode] = useState(MODE.CREATING)
-
-
-  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const createBtnVariation = useBreakpointValue(
     {
@@ -77,6 +75,14 @@ const AllHotelsScreen = () => {
       setHotelToDisplay(() => hotels)
     }
   }, [filterTerms, hotels])
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  useEffect(() => {
+    if(!isOpen) {
+      setHotelToEdit(() => {})
+    }
+  },[isOpen])
 
   const { 
     isOpen: isAlertOpen, 
@@ -161,6 +167,7 @@ const AllHotelsScreen = () => {
       </HStack>
 
       <CreateOrEditHotel
+        hotelToEdit={hotelToEdit}
         mode={operatingMode}
         isOpen={isOpen}
         onClose={onClose}
@@ -204,7 +211,11 @@ const AllHotelsScreen = () => {
                     <Hotel
                       key={index}
                       hotel={hotel}
-                      editHotel={() => {}}
+                      editHotel={() => {
+                        onOpen()
+                        setOperatingMode(MODE.EDITING)
+                        setHotelToEdit(() => hotel)
+                      }}
                       deleteHotel={() => {
                         onAlertOpen()
                         setHotelToDelete(() => hotel)
@@ -233,7 +244,11 @@ const AllHotelsScreen = () => {
                     <Hotel
                       key={index}
                       hotel={hotel}
-                      editHotel={() => {}}
+                      editHotel={() => {
+                        onOpen()
+                        setOperatingMode(MODE.EDITING)
+                        setHotelToEdit(() => hotel)
+                      }}
                       deleteHotel={() => {
                         onAlertOpen()
                         setHotelToDelete(() => hotel)
