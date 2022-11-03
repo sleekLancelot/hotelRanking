@@ -2,7 +2,13 @@ import React, { useState, useMemo } from "react";
 // import { CSSReset, ThemeProvider } from "@chakra-ui/core";
 import { Box, useTheme } from '@chakra-ui/react'
 import ReactMapGl from "react-map-gl";
+import mapboxgl from "mapbox-gl";
 import 'mapbox-gl/dist/mapbox-gl.css';
+
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+
 
 const API_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
 
