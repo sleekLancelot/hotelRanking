@@ -262,7 +262,7 @@ const CreateOrEditHotel = ({
             <Box flexBasis={{base: '100%', md: '40%'}}>
               <FormControl 
                 w={'100%'} 
-                h={'100%'} 
+                h={'90%'} 
                 mb={5}
                 id='address'
                 isRequired
@@ -285,7 +285,6 @@ const CreateOrEditHotel = ({
                           longitude: env.lng,
                         }
                       }))}
-
                     />
                 </Box>                
               </FormControl>
