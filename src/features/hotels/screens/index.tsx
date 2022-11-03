@@ -9,8 +9,10 @@ import { CreateOrEditHotel } from './CreateOrEditHotel'
 import { HotelProp, hotelSelector, setHotelBrands, setHotels } from '../../../redux/slices'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { Hotel, HotelAlertDialog } from '../../../UI/Component'
+import { deleteNestedNullObj, filterFn } from '../../../utils'
 
 const AllHotelsScreen = () => {
+  const [hotelToDisplay, setHotelToDisplay] = useState<Array<any>>([])
   const [filterTerms, setFilterTerms] = useState<Array<any>>([])
   const [hotelToDelete, setHotelToDelete] = useState<any>({})
   const [operatingMode, setOperatingMode] = useState(MODE.CREATING)
@@ -61,6 +63,20 @@ const AllHotelsScreen = () => {
   useEffect(() => {
     dispatch( setHotels( fetchHotelsFromStorage() ) )
   },[])
+
+  const getSearchTerms = useCallback(() => {
+    return filterTerms.map( term => term?.value)
+  },[filterTerms])
+
+  useEffect(() => {
+    if(!!filterTerms?.length) {
+      const filteredHotels = hotels?.map( hotel => getSearchTerms().includes(hotel?.brand) ? hotel : null)
+      
+      setHotelToDisplay(() => deleteNestedNullObj(filteredHotels))
+    } else {
+      setHotelToDisplay(() => hotels)
+    }
+  }, [filterTerms, hotels])
 
   const { 
     isOpen: isAlertOpen, 
@@ -167,16 +183,22 @@ const AllHotelsScreen = () => {
           !!brands?.length &&
           brands?.map( (brand, index) => (
             <Box key={index} my={5} mx={[5,10]}>
-              <chakra.h3
-                textAlign={'left'}
-                color={'gray.500'}
-              >{brand}</chakra.h3>
-              <Divider mr={2} my={3} />
+              {
+                !!hotelToDisplay?.length &&
+                hotelToDisplay?.some( hotel => hotel?.brand === brand) &&
+                <>
+                  <chakra.h3
+                    textAlign={'left'}
+                    color={'gray.500'}
+                  >{brand}</chakra.h3>
+                  <Divider mr={2} my={3} />
+                </>
+              }
 
               <SimpleGrid columns={{base: 1, md: 3}} spacingX='30px' spacingY='20px'>
                 {
-                  !!hotels?.length &&
-                  hotels?.map( (hotel, index) => (
+                  !!hotelToDisplay?.length &&
+                  hotelToDisplay?.map( (hotel, index) => (
                     !!hotel?.brand &&
                     hotel?.brand?.toLocaleLowerCase() === brand?.toLocaleLowerCase() &&
                     <Hotel
@@ -196,8 +218,8 @@ const AllHotelsScreen = () => {
         }
 
         {
-          !!hotels?.length &&
-          hotels?.some( hotel => !hotel?.brand) &&
+          !!hotelToDisplay?.length &&
+          hotelToDisplay?.some( hotel => !hotel?.brand) &&
           <Box my={5} mx={[5,10]}>
             <chakra.h6
                 textAlign={'left'}
@@ -206,7 +228,7 @@ const AllHotelsScreen = () => {
             <Divider mr={2} my={3} />
               <SimpleGrid columns={{base: 1, md: 3}} spacingX='30px' spacingY='20px'>
                 {
-                  hotels?.map( (hotel, index) => (
+                  hotelToDisplay?.map( (hotel, index) => (
                     !hotel?.brand &&
                     <Hotel
                       key={index}
