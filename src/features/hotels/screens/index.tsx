@@ -166,6 +166,9 @@ const AllHotelsScreen = () => {
         </HStack>
       </HStack>
 
+      <chakra.h2 my={5} fontSize={22} fontFamily={'body'}>Hotel Ranking</chakra.h2>
+
+
       <CreateOrEditHotel
         hotelToEdit={hotelToEdit}
         mode={operatingMode}

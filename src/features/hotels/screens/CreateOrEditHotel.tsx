@@ -17,6 +17,7 @@ import {
   Flex,
   Spacer,
   AspectRatio,
+  FormHelperText,
 } from '@chakra-ui/react'
 import { MODE } from '../constants'
 import { HotelProp, hotelSelector, setHotels } from '../../../redux/slices'
@@ -267,7 +268,7 @@ const CreateOrEditHotel = ({
                 isRequired
               >
                 <FormLabel>Address</FormLabel>
-
+                  <FormHelperText mb={5}>Click on a spot to save the address</FormHelperText>
                 <Box
                   w={'100%'} 
                   h={'100%'}
