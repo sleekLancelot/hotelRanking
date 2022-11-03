@@ -5,7 +5,10 @@ export interface HotelProp {
     name: string
     city: string
     country: string
-    address: string
+    address: {
+        latitude: number,
+        longitude: number,
+    },
     brand?: string
     rank?: number
     id: string

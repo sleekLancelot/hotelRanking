@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react'
 import { MODE } from '../constants'
 import { HotelProp, hotelSelector, setHotels } from '../../../redux/slices'
-import { RatingComponent } from '../../../UI/Component'
+import { MapComponent, RatingComponent } from '../../../UI/Component'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 
 interface CreateOrEditHotelProps {
@@ -28,6 +28,11 @@ interface CreateOrEditHotelProps {
   mode: string
   isOpen: boolean
   onClose: any
+}
+
+interface HotelAddress {
+  latitude: number,
+  longitude: number,
 }
 
 const CreateOrEditHotel = ({
@@ -40,7 +45,10 @@ const CreateOrEditHotel = ({
     name: hotelToEdit?.name ?? '',
     city: hotelToEdit?.city ?? '',
     country: hotelToEdit?.country ?? '',
-    address: hotelToEdit?.address ?? '',
+    address: hotelToEdit?.address ?? {
+      latitude: undefined,
+      longitude: undefined,
+    },
     rank: hotelToEdit?.rank ?? 0,
     brand: hotelToEdit?.brand ?? '',
     id: hotelToEdit?.id ?? '',
@@ -124,7 +132,10 @@ const CreateOrEditHotel = ({
           name: '',
           city: '',
           country: '',
-          address: '',
+          address: {
+            latitude: undefined,
+            longitude: undefined,
+          },
           rank: 0,
           brand: '',
           id: '',
@@ -143,7 +154,10 @@ const CreateOrEditHotel = ({
           name: '',
           city: '',
           country: '',
-          address: '',
+          address: {
+            latitude: undefined,
+            longitude: undefined,
+          },
           rank: 0,
           brand: '',
           id: '',
@@ -159,9 +173,9 @@ const CreateOrEditHotel = ({
 	}
 
   const isInvalid = () => (
-    !hotelDTO.name ||
-    !hotelDTO.city || !hotelDTO.country ||
-    !hotelDTO.id
+    !hotelDTO.name || !hotelDTO.city ||
+    !hotelDTO.country || !hotelDTO.id ||
+    hotelDTO.address.latitude === undefined || hotelDTO.address.longitude === undefined
   )
 
   return (
@@ -261,16 +275,17 @@ const CreateOrEditHotel = ({
                   border={'1px solid black'}
                   borderRadius={8}
                 >
-                  <AspectRatio 
-                    w={'100%'} 
-                    h={'100%'} 
-                    ratio={16 / 9}
-                  >
-                    <iframe
-                      title='hotelAddress'
-                      src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.952912260219!2d3.375295414770757!3d6.5276316452784755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8b2ae68280c1%3A0xdc9e87a367c3d9cb!2sLagos!5e0!3m2!1sen!2sng!4v1567723392506!5m2!1sen!2sng'
+                  <MapComponent
+                      address={hotelDTO?.address as HotelAddress}
+                      setAddress={(env: any) => setHotelDTO( details => ({
+                        ...details,
+                        address: {
+                          latitude: env.lat,
+                          longitude: env.lng,
+                        }
+                      }))}
+
                     />
-                  </AspectRatio>
                 </Box>                
               </FormControl>
             </Box>
